@@ -3,8 +3,8 @@ package Automation;
 import static org.testng.Assert.assertEquals;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -16,8 +16,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-
-public class MyTestCases extends myData {
+public class myTestCases extends myData {
 
 	WebDriver driver = new EdgeDriver();
 
@@ -115,18 +114,15 @@ public class MyTestCases extends myData {
 		AgreeCheckBox.click();
 
 		ContinueButton.click();
-		
-		
+
 		Thread.sleep(5000);
-		
+
 		String ActualSignUpMessage = driver.findElement(By.className("maintext")).getText();
-		
-		
-		// This is a test case that compares the actual result with the expected result and works like the if 
+
+		// This is a test case that compares the actual result with the expected result
+		// and works like the if
 		Assert.assertEquals(ActualSignUpMessage, ExpectedTextforTheSignUp);
-		
-		
-		
+
 //		//Static
 //		
 //		String [] FirstNames = {"Sam", "Tom", "Dan", "Lily", "Dev", "Mel"}; 
@@ -142,97 +138,110 @@ public class MyTestCases extends myData {
 //		
 
 	}
-	
-	@Test(priority = 2,enabled = false)
-	public void LogoutTest () throws InterruptedException {
-		
-	Thread.sleep(3000);
-		
-	// Link text Method
-    driver.findElement(By.linkText("Logoff")).click();
-    
-    
-    // Partial link text method
-    // driver.findElement(By.partialLinkText("Logo")).click();
-	
-    
-    // System.out.println(driver.getPageSource());
-    
-    boolean ActualValueForLogout = driver.getPageSource().contains(TheLogoutMessage);
-    
-    Assert.assertEquals(ActualValueForLogout, true);
+
+	@Test(priority = 2, enabled = false)
+	public void LogoutTest() throws InterruptedException {
+
+		Thread.sleep(3000);
+
+		// Link text Method
+		driver.findElement(By.linkText("Logoff")).click();
+
+		// Partial link text method
+		// driver.findElement(By.partialLinkText("Logo")).click();
+
+		// System.out.println(driver.getPageSource());
+
+		boolean ActualValueForLogout = driver.getPageSource().contains(TheLogoutMessage);
+
+		Assert.assertEquals(ActualValueForLogout, true);
 
 	}
-	
 
-	@Test(priority = 3,enabled = false)
-	
+	@Test(priority = 3, enabled = false)
+
 	public void Login() throws InterruptedException {
-		
-	// Search and count how many tags of type <a this pages has 
-	//System.out.println(driver.findElements(By.tagName("a")).size());
-	
-	//Click Login or Register button
-		
-	// ----LinkText method----	
-	//driver.findElement(By.linkText("Login or register")).click();
-	
-	//----Xpath method----
-	//driver.findElement(By.xpath("//a[@href='https://automationteststore.com/index.php?rt=account/login']")).click();
-	
-	//Using selector Hub:
-		//1) Xpath
-	//driver.findElement(By.xpath("//a[normalize-space()='Login or register']")).click();
-	 	//2) CSS Selector
-	driver.findElement(By.cssSelector("ul[id='customer_menu_top'] li a")).click();
-	
-	WebElement LoginNameInput = driver.findElement(By.id("loginFrm_loginname"));
-	
-	WebElement LoginPassword = driver.findElement(By.id("loginFrm_password"));
 
-	WebElement LoginButton = driver.findElement(By.cssSelector("button[title='Login']"));
-	
+		// Search and count how many tags of type <a this pages has
+		// System.out.println(driver.findElements(By.tagName("a")).size());
 
-	LoginNameInput.sendKeys(LOGINAME);
-	
-	LoginPassword.sendKeys(Password);
-	
-	Thread.sleep(3000);
-	
-	LoginButton.click();
-	
-	// Now we are logged in
-	
-	boolean ActualValue = driver.getPageSource().contains(WelcomeMessage);
-	boolean ExpectedValue = true;
-	
-	assertEquals(ActualValue, ExpectedValue);
-	
-	
+		// Click Login or Register button
+
+		// ----LinkText method----
+		// driver.findElement(By.linkText("Login or register")).click();
+
+		// ----Xpath method----
+		// driver.findElement(By.xpath("//a[@href='https://automationteststore.com/index.php?rt=account/login']")).click();
+
+		// Using selector Hub:
+		// 1) Xpath
+		// driver.findElement(By.xpath("//a[normalize-space()='Login or
+		// register']")).click();
+		// 2) CSS Selector
+		driver.findElement(By.cssSelector("ul[id='customer_menu_top'] li a")).click();
+
+		WebElement LoginNameInput = driver.findElement(By.id("loginFrm_loginname"));
+
+		WebElement LoginPassword = driver.findElement(By.id("loginFrm_password"));
+
+		WebElement LoginButton = driver.findElement(By.cssSelector("button[title='Login']"));
+
+		LoginNameInput.sendKeys(LOGINAME);
+
+		LoginPassword.sendKeys(Password);
+
+		Thread.sleep(3000);
+
+		LoginButton.click();
+
+		// Now we are logged in
+
+		boolean ActualValue = driver.getPageSource().contains(WelcomeMessage);
+		boolean ExpectedValue = true;
+
+		assertEquals(ActualValue, ExpectedValue);
+
 	}
-	
-	@Test(priority = 4)
+
+	@Test(priority = 4, invocationCount = 5)
 	public void AddItemToTheCart() {
-		
-	driver.navigate().to(myWebsite);	
-	
-	List<WebElement> AllItems = driver.findElements(By.className("prdocutname"));
-	
-	int RandomIndexForTheItem = rand.nextInt(AllItems.size());
-	
-	// Selecting a random item
-	AllItems.get(RandomIndexForTheItem).click();
-	
-	System.out.println(driver.getCurrentUrl()); 
-	
+
+		driver.navigate().to(myWebsite);
+
+		Random rand = new Random();
+
+		for (int i = 0; i < 10; i++) { // max 10 attempts here we can increase
+			// pick a random item and open it
+			List<WebElement> items = driver.findElements(By.className("prdocutname"));
+			int randomItem = rand.nextInt(items.size());
+			items.get(randomItem).click();
+
+			// check availability
+			boolean outOfStock = driver.getPageSource().contains("Out of Stock");
+			boolean blockedProduct = driver.getCurrentUrl().contains("product_id=116");
+
+			if (!outOfStock && !blockedProduct) {
+				driver.findElement(By.cssSelector(".cart")).click();
+				System.out.println("Added to cart: " + driver.getCurrentUrl());
+				return; // success
+			}
+
+			driver.navigate().back(); // try again
+		}
+
+		throw new RuntimeException("No in-stock item found after 10 attempts.");
+
+
 	}
-	
-	@AfterTest
-	public void AfterMyTest() {
 
-		// driver.close();
+	//@AfterTest
 
-		// driver.quit();
+	//public void AfterMyTest() {
 
-	}
+		//driver.close();
+
+		//driver.quit();
+
+	//}
+
 }
